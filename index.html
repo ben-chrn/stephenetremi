@@ -5,39 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Quand est-ce que Stephen et Rémi reviennent ?</title>
-  <style>
-    body {
-    margin: 0;
-    padding: 0;
-    }
-    .container {
-        background: #222;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    #timer {
-        color: #fff;
-        font-size: 4rem;
-    }
-    .label {
-        font-size: 2.5rem;
-        padding-left: 0.25rem;
-    }
-  </style>
+  <link href="main.css" rel="stylesheet" />
+  <link href="favicon.png" rel="icon" />
 </head>
 <body>
 
-  <div class="container">
-    <p id="timer">
-      Stephen et Rémi reviennent dans :
+  <div id="container">
+    <p>Stephen et Rémi reviennent dans</p>
+    <div id="timer">
+      <span id="timer-months"></span>
+      <span id="timer-weeks"></span>
       <span id="timer-days"></span>
       <span id="timer-hours"></span>
       <span id="timer-mins"></span>
       <span id="timer-secs"></span>
-    </p>
+    </div>
   </div>
   <script>
     var endDate = new Date("Oct 6, 2019 12:00:00").getTime();
@@ -47,32 +29,68 @@
         let now = new Date().getTime();
         let t = endDate - now;
 
+        // timer
         if (t >= 0) {
 
-          let days = Math.floor(t / (1000 * 60 * 60 * 24));
-          let hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          let mins = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-          let secs = Math.floor((t % (1000 * 60)) / 1000);
+          let monthsTime = 1000 * 60 * 60 * 24* 7 * 4;
+          let weeksTime = 1000 * 60 * 60 * 24* 7;
+          let daysTime = 1000 * 60 * 60 * 24;
+          let hoursTime = 1000 * 60 * 60;
+          let minsTime = 1000 * 60;
+          let secsTime = 1000;
+          
+          let months = Math.floor(t / monthsTime)
+          let weeks = Math.floor ((t - months*monthsTime) / weeksTime)
+          let days = Math.floor ((t - (months*monthsTime+weeks*weeksTime)) / daysTime)
+          let hours = Math.floor ((t - (months*monthsTime+weeks*weeksTime+days*daysTime)) / hoursTime)
+          let mins = Math.floor ((t - (months*monthsTime+weeks*weeksTime+days*daysTime+hours*hoursTime)) / minsTime)
+          let secs = Math.floor ((t - (months*monthsTime+weeks*weeksTime+days*daysTime+hours*hoursTime+mins*minsTime)) / secsTime)
 
-          document.getElementById("timer-days").innerHTML = days +
-            "<span class='label'>JOUR(S)</span>";
+          if(months > 0) {
+            document.getElementById("timer-months").innerHTML = "<span>"+("0"+months).slice(-2)+"</span>" +
+              "<span class='label'>months</span>";
+          }
 
-          document.getElementById("timer-hours").innerHTML = ("0" + hours).slice(-2) +
-            "<span class='label'>H</span>";
+          if(weeks > 0) {
+            document.getElementById("timer-weeks").innerHTML = "<span>"+("0"+weeks).slice(-2)+"</span>" +
+            "<span class='label'> weeks</span>";
+          }
 
-          document.getElementById("timer-mins").innerHTML = ("0" + mins).slice(-2) +
-            "<span class='label'>M</span>";
+          if(days > 0) {
+            document.getElementById("timer-days").innerHTML = "<span>"+("0"+days).slice(-2)+"</span>" +
+              "<span class='label'> days</span>";
+          }
 
-          document.getElementById("timer-secs").innerHTML = ("0" + secs).slice(-2) +
-            "<span class='label'>S</span>";
+          document.getElementById("timer-hours").innerHTML = "<span>"+("0" + hours).slice(-2)+"</span>" +
+            "<span class='label'> hrs</span>";
+
+          document.getElementById("timer-mins").innerHTML = "<span>"+("0" + mins).slice(-2)+"</span>" +
+            "<span class='label'> mins</span>";
+
+          document.getElementById("timer-secs").innerHTML = "<span>"+("0" + secs).slice(-2)+"</span>" +
+            "<span class='label'> secs</span>";
 
         } else {
 
-          document.getElementById("timer").innerHTML = "The countdown is over!";
+          document.getElementById("timer").innerHTML = "FALCON HAS LANDED!";
 
         }
 
+        // bg
+        var container = document.getElementById('container')
+        console.log(container);
+        container.style.backgroundColor = getRandomColor();
+
       }, 1000);
+
+      function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
 
   </script>
 
